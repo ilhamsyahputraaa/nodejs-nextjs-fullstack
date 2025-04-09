@@ -8,76 +8,75 @@ generator client {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String?
-  email         String   @unique
+  email         String           @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  role UserRole @default(MEMBER)
+  role          UserRole         @default(MEMBER)
   accounts      Account[]
   sessions      Session[]
-  divisions DivisionMember[]
-  tasks         Task[]   @relation("AssignedTasks")
+  divisions     DivisionMember[]
+  tasks         Task[]           @relation("AssignedTasks")
 
   Project Project[]
 }
 
 model Division {
-  id      String                @id @default(cuid())
-  name    String
-  members DivisionMember[]
+  id       String           @id @default(cuid())
+  name     String
+  members  DivisionMember[]
   projects Project[]
 }
 
 model DivisionMember {
-  id             String   @id @default(cuid())
-  user           User     @relation(fields: [userId], references: [id])
-  userId         String
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
   division   Division @relation(fields: [divisionId], references: [id])
   divisionId String
-  role UserRole
+  role       UserRole
 }
 
 model Project {
-  id             String   @id @default(cuid())
-  name           String
+  id         String    @id @default(cuid())
+  name       String
   division   Division? @relation(fields: [divisionId], references: [id])
   divisionId String?
-  tasks          Task[]
-  ownerId     String
-  owner User @relation(fields:[ownerId], references:[id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  tasks      Task[]
+  ownerId    String
+  owner      User      @relation(fields: [ownerId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Task {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  dueDate     DateTime?
-  assignedTo  User?    @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  id           String     @id @default(cuid())
+  title        String
+  description  String?
+  dueDate      DateTime?
+  assignedTo   User?      @relation("AssignedTasks", fields: [assignedToId], references: [id])
   assignedToId String?
-  project     Project  @relation(fields: [projectId], references: [id])
-  projectId   String
-  status TaskStatus @default(TODO)
+  project      Project    @relation(fields: [projectId], references: [id])
+  projectId    String
+  status       TaskStatus @default(TODO)
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String? 
-  access_token       String? 
-  expires_at         Int?    
-  token_type         String? 
-  scope              String? 
-  id_token           String? 
-  session_state      String? 
-  user               User    @relation(fields: [userId], references: [id])
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
@@ -97,7 +96,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
 
 enum UserRole {
   ADMIN

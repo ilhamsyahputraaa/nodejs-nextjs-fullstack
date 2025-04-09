@@ -1,6 +1,7 @@
 import {
   createTask,
   deleteTask,
+  getTaskDetail,
   getTaskUser,
   updateTask,
 } from "../services/task.service";
@@ -11,6 +12,19 @@ export const getTaskByUSer = async (req: Request, res: Response) => {
     const userId = req.params.id;
     const { tasks } = await getTaskUser(userId);
     res.status(200).json({ tasks });
+  } catch (error: any) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
+export const handleGetTaskDetail = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id; // ✅ dari toke
+    if (!userId) throw new Error("not Authorized");
+    const { taskId } = req.body.id;
+    const task = await getTaskDetail(taskId);
+    if (!task) throw new Error("Task not found"); 
+    res.status(200).json({ task });
   } catch (error: any) {
     res.status(404).json({ error: error.message });
   }

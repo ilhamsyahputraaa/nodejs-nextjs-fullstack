@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -9,6 +8,24 @@ export const getProjectUser = async (userId: string) => {
   });
   if (!projects) throw new Error("Invalid credentials");
   return { projects };
+};
+
+export const getProjectDetail = async (projectId: string) => {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: {
+      division: true,
+      owner: true,
+      tasks: {
+        include: {
+          assignedTo: true,
+          project: true,
+        },
+      },
+    },
+  });
+  if (!project) throw new Error("Project not found");
+  return project;
 };
 
 export const createProject = async (

@@ -1,6 +1,7 @@
 import {
   createProject,
   deleteProject,
+  getProjectDetail,
   getProjectUser,
   updateProject,
 } from "../services/project.service";
@@ -16,6 +17,18 @@ export const getProjectByUSer = async (req: Request, res: Response) => {
   }
 };
 
+export const handleGetProjectDetail = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id; // ✅ dari token
+    if (!userId) throw new Error("not Authorized");
+    const { projectId } = req.body.id;
+    const project = await getProjectDetail(projectId);
+    if (!project) throw new Error("Project not found");
+    res.status(200).json({ project });
+  } catch (error: any) {
+    res.status(404).json({ error: error.message });
+  }
+};
 export const handleCreateProject = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id; // ✅ dari token

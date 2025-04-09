@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { registerUser, loginUser, getProfileUser } from "../services/auth.service";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
   try {

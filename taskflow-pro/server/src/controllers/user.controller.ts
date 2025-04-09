@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { getProfileUser, updatePasswordUser, updateProfileUser } from "@services/user.service";
+import {
+  getProfileUser,
+  updatePasswordUser,
+  updateProfileUser,
+} from "../services/user.service";
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
@@ -10,8 +14,6 @@ export const getUserById = async (req: Request, res: Response) => {
     res.status(404).json({ error: err.message });
   }
 };
-
-
 
 export const handleUpdateProfile = async (req: Request, res: Response) => {
   try {
@@ -29,7 +31,6 @@ export const handleUpdateProfile = async (req: Request, res: Response) => {
   }
 };
 
-
 export const handleUpdatePassword = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id; // dari verifyToken middleware
@@ -45,4 +46,3 @@ export const handleUpdatePassword = async (req: Request, res: Response) => {
     res.status(400).json({ error: err.message });
   }
 };
-

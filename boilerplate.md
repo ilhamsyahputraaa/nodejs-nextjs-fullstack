@@ -1,4 +1,3 @@
-
 ---
 
 ## 💼 **Project Title**: TaskFlow Pro
@@ -10,6 +9,7 @@
 ## 🧱 **Tech Stack**
 
 ### 🔧 Backend
+
 - Node.js
 - Express
 - PostgreSQL (pakai Prisma ORM)
@@ -22,6 +22,7 @@
 - Middleware & service layer architecture
 
 ### 🧑‍💻 Frontend
+
 - Next.js (App Router)
 - TailwindCSS + shadcn/ui
 - React Query (Tanstack Query)
@@ -71,6 +72,7 @@ taskflow-pro/
 ## 🛠️ Step-by-Step Setup
 
 ### ✅ 1. Buat Backend Project
+
 ```bash
 mkdir -p taskflow-pro/server && cd taskflow-pro/server
 npm init -y
@@ -81,11 +83,13 @@ npx prisma init
 ```
 
 ### ✅ 2. Setup Folder Struktur + tsconfig
+
 ```bash
 mkdir -p src/{controllers,routes,services,middlewares,utils}
 ```
 
 Edit `tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -98,9 +102,9 @@ Edit `tsconfig.json`:
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
-      "@controllers/*": ["controllers/*"],
+      "../controllers/*": ["controllers/*"],
       "@routes/*": ["routes/*"],
-      "@services/*": ["services/*"]
+      "../services/*": ["services/*"]
     }
   }
 }
@@ -109,7 +113,9 @@ Edit `tsconfig.json`:
 ---
 
 ### ✅ 3. Prisma Setup
+
 Edit `prisma/schema.prisma`:
+
 ```prisma
 datasource db {
   provider = "postgresql"
@@ -175,13 +181,13 @@ model Account {
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String? 
-  access_token       String? 
-  expires_at         Int?    
-  token_type         String? 
-  scope              String? 
-  id_token           String? 
-  session_state      String? 
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
   user               User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
@@ -206,6 +212,7 @@ model VerificationToken {
 ```
 
 Lalu:
+
 ```bash
 npx prisma migrate dev --name init
 npx prisma generate
@@ -216,6 +223,7 @@ npx prisma generate
 ### ✅ 4. Buat Server Express
 
 `src/app.ts`
+
 ```ts
 import express from "express";
 import cors from "cors";
@@ -232,6 +240,7 @@ export default app;
 ```
 
 `src/server.ts`
+
 ```ts
 import dotenv from "dotenv";
 import app from "./app";
@@ -247,6 +256,7 @@ app.listen(PORT, () => {
 ---
 
 ### ✅ 5. Setup Frontend (Next.js)
+
 ```bash
 cd ../
 npx create-next-app@latest web --typescript --app --tailwind --eslint
@@ -259,6 +269,7 @@ Set alias dan `tsconfig.json` agar rapih.
 ---
 
 ### ✅ 6. Best Practice Frontend:
+
 - Gunakan folder `lib/axios.ts` untuk instance axios
 - Setup folder `hooks/useUser.ts` dan `hooks/useAuth.ts`
 - Gunakan React Query untuk semua API calls
@@ -268,10 +279,7 @@ Set alias dan `tsconfig.json` agar rapih.
 
 Kalau kamu oke dengan semua ini, kita bisa langsung **jalanin backend dari langkah pertama**, aku bisa temenin setup sampai live-ready. Mau langsung mulai dari `Step 1: Backend Init` atau ada yang ingin kamu tanya dulu?
 
-
 ==========================
-
-
 
 Mantap banget, kamu udah rapi dan clean banget setup-nya! Kita langsung lanjut ke **Step Selanjutnya (Step 2: Modularizing Structure + Middleware Setup)** supaya kamu siap ke next fase kayak autentikasi lebih kompleks, error handler, dan fitur lain.
 
@@ -280,6 +288,7 @@ Mantap banget, kamu udah rapi dan clean banget setup-nya! Kita langsung lanjut k
 ## ✅ Step 2: Struktur Modular + Middleware Setup
 
 ### 1. **Struktur Folder Ideal untuk Industri**
+
 Agar scalable dan mudah maintenance:
 
 ```
@@ -305,7 +314,12 @@ Agar scalable dan mudah maintenance:
 ```ts
 import { Request, Response, NextFunction } from "express";
 
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+export function errorHandler(
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const statusCode = err.status || 500;
   res.status(statusCode).json({
     success: false,
@@ -315,13 +329,18 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
 ```
 
 #### 🧩 `/middlewares/auth.ts` (Optional tapi penting nanti)
+
 Untuk validasi JWT token di route-route protected:
 
 ```ts
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) return res.status(401).json({ message: "Unauthorized" });
@@ -382,6 +401,7 @@ declare global {
 ```
 
 Lalu di `tsconfig.json`, pastikan sudah include:
+
 ```json
 "include": ["src", "types"]
 ```
@@ -394,12 +414,7 @@ Kalau ini semua udah beres, kita bisa langsung lanjut ke:
 
 Kalau kamu udah siap atau udah implement sampe sini, tinggal bilang aja "gas step 3" biar kita lanjut 😎
 
-
-
-
 ==================================
-
-
 
 Oke, kita **gas ke Step 3: Service Layer + Protected Routes Setup** 🚀
 
@@ -426,7 +441,11 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export const registerUser = async (email: string, password: string, name?: string) => {
+export const registerUser = async (
+  email: string,
+  password: string,
+  name?: string
+) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
@@ -520,6 +539,7 @@ app.use("/api/user", userRoutes);
 ---
 
 ### 4. **Testing Checklist**
+
 - ✅ `POST /api/auth/register` → buat akun baru
 - ✅ `POST /api/auth/login` → dapatkan JWT token
 - ✅ `GET /api/user/me` → **akses dengan Bearer Token**, harus return info user

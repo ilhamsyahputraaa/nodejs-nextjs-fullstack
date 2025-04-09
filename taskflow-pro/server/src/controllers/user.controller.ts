@@ -17,7 +17,9 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const handleUpdateProfile = async (req: Request, res: Response) => {
   try {
+    
     const userId = (req as any).user.id; // dari verifyToken middleware
+    console.log(userId);
     const { name, image } = req.body;
 
     const updated = await updateProfileUser(userId, { name, image });
@@ -35,6 +37,9 @@ export const handleUpdatePassword = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id; // dari verifyToken middleware
     const { oldPassword, newPassword } = req.body;
+
+    console.log(userId, "update pw");
+    
 
     const updated = await updatePasswordUser(userId, oldPassword, newPassword);
 

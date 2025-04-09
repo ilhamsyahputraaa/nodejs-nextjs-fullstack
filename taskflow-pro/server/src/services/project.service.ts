@@ -42,15 +42,21 @@ export const createProject = async (
 };
 
 
-
 export const updateProject = async (
-  projectId:string,
+  projectId: string,
   userId: string,
   name: string,
-  division_id?: string,
+  division_id?: string
 ) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
+
+  const existingProject = await prisma.project.findUnique({
+    where: { id: projectId },
+  });
+  if (!existingProject) throw new Error("Project not found");
+  if (existingProject.ownerId !== userId)
+    throw new Error("Unauthorized to update this project");
 
   if (division_id) {
     const division = await prisma.division.findUnique({
@@ -59,12 +65,11 @@ export const updateProject = async (
     if (!division) throw new Error("Division not found");
   }
 
-  const project = await prisma.project.update({
+  const updated = await prisma.project.update({
     where: { id: projectId },
     data: {
       name,
       divisionId: division_id,
-      ownerId: userId,
     },
     include: {
       division: true,
@@ -72,7 +77,7 @@ export const updateProject = async (
     },
   });
 
-  return project;
+  return updated;
 };
 
 

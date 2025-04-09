@@ -4,9 +4,10 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/apiError"; // custom error class
 
 interface JwtPayload {
-  userId: string;
-  role: string;
+  id: string;
+  email: string;
 }
+
 
 // Extend Express Request
 declare global {

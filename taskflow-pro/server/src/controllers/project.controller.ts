@@ -21,6 +21,8 @@ export const handleCreateProject = async (req: Request, res: Response) => {
     const userId = (req as any).user.id; // ✅ dari token
     const { name, division_id } = req.body;
 
+    console.log("create project", userId);
+    
     const updated = await createProject(userId, name, division_id);
 
     res.status(200).json({
@@ -36,6 +38,8 @@ export const handleUpdateProject = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id; // ✅ dari token
     const { projectId, name, division_id } = req.body;
+    
+    console.log(" project ID", projectId);
 
     const updated = await updateProject(projectId, userId, name, division_id);
 

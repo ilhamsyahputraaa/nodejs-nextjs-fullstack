@@ -31,11 +31,11 @@ export const loginUser = async (email: string, password: string) => {
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) throw new Error("Invalid credentials");
 
-  const token = jwt.sign(
-    { userId: user.id, role: user.role },
-    process.env.JWT_SECRET!,
-    { expiresIn: "1d" }
-  );
+const token = jwt.sign(
+  { id: user.id, email:user.email, role:user.role }, // ✅ pakai id
+  process.env.JWT_SECRET!,
+  { expiresIn: "1d" }
+);
 
   return { user, token };
 };

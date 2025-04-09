@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { register, login, getProfile } from "../controllers/auth.controller";
 import { verifyToken } from "middlewares/auth";
-import { getUserById } from "@controllers/user.controller";
 
 const router = express.Router();
 
@@ -16,7 +15,6 @@ router.post("/login", (req: Request, res: Response) => {
 router.get("/profile", verifyToken, getProfile);
 
 
-router.get("/profile/:id", verifyToken, getUserById);
 
 
 

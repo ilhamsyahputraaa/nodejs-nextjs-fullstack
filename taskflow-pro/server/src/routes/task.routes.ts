@@ -5,7 +5,7 @@ import {
 } from "../controllers/task.controller";
 import express from "express";
 import { verifyToken } from "../middlewares/auth";
-import { checkDivisionAdmin } from "@middlewares/isDivisionAdmin";
+import { checkDivisionAdmin } from "../middlewares/isDivisionAdmin";
 
 const router = express.Router();
 

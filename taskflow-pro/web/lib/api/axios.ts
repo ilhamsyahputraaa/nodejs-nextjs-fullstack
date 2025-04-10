@@ -1,14 +1,17 @@
-// /lib/api/axios.client.ts
 import axios from "axios";
 
-export const getAuthAxiosClient = () => {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+const axiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+});
 
-  return axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  });
-};
+axiosInstance.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+export default axiosInstance;

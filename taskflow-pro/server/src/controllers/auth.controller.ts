@@ -26,7 +26,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const id = req.user?.userId; // Ambil ID dari JWT (middleware)
+    const id = req.user?.id; // Ambil ID dari JWT (middleware)
     if (!id) throw new Error("Unauthorized");
 
     const { user } = await getProfileUser( id );

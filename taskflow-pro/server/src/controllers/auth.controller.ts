@@ -18,8 +18,12 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const { user, token } = await loginUser(email, password);
     res.status(200).json({ user, token });
+    console.log(user,token);
+    
   } catch (err: any) {
     res.status(401).json({ error: err.message });
+    console.log('someone error logged in');
+    
   }
 };
 

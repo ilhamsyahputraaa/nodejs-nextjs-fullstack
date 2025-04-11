@@ -16,10 +16,16 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const { user, token } = await loginUser(email, password);
+    const { user, token } = await loginUser(email, password);    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    });
+
     res.status(200).json({ user, token });
     console.log(user,token);
-    
+
   } catch (err: any) {
     res.status(401).json({ error: err.message });
     console.log('someone error logged in');

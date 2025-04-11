@@ -22,22 +22,30 @@ export const register = async (data: {
 };
 
 
-export async function loginUser(data: { email: string; password: string }) {
-  const res = await fetch(`${API_URL}/auth/login`, {
+
+export async function loginUser({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const res = await fetch("http://localhost:8080/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
-    // ⛔ TIDAK PERLU credentials karena ini server-side
+    body: JSON.stringify({ email, password }),
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Login failed");
+    const err = await res.json();
+    throw new Error(err.message || "Login failed");
   }
 
-  return res.json();
+  const data = await res.json();
+
+  return data;
 }
 
 

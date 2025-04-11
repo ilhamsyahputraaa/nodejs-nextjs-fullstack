@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth";
 
 export default function LoginForm({
   loginUser,
@@ -25,9 +26,8 @@ const router = useRouter()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await loginUser({ email, password });
-      console.log("Login success:", res);
-      // Redirect / set cookie / etc halaman lain
+      const {user, token} = await loginUser({ email, password });
+      useAuthStore.getState().login(user, token); // simpan ke store
       router.push("/dashboard");
     } catch (err: any) {
       console.error("Login failed:", err.message);

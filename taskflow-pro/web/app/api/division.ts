@@ -12,7 +12,7 @@ export const getDivisions = async () => {
 
   if (!token) throw new Error("Token not found");
 
-  const res = await fetch(`${API_URL}/divisions/`, {
+  const res = await fetch(`${API_URL}/division/`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -30,7 +30,7 @@ export const getDivisionsById = async (id:String) => {
 
   if (!token) throw new Error("Token not found");
 
-  const res = await fetch(`${API_URL}/divisions/${id}`, {
+  const res = await fetch(`${API_URL}/division/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

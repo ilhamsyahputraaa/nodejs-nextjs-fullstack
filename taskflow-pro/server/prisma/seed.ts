@@ -5,9 +5,9 @@ import { hash } from "bcrypt";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create 5 users
+  // Create 20 users
   const users = await Promise.all(
-    Array.from({ length: 15 }).map(async (_, i) =>
+    Array.from({ length: 20 }).map(async (_, i) =>
       prisma.user.create({
         data: {
           id: `${i}`,
@@ -19,9 +19,9 @@ async function main() {
     )
   );
 
-  // Create 5 divisions
+  // Create 10 divisions
   const divisions = await Promise.all(
-    Array.from({ length: 15 }).map((_, i) =>
+    Array.from({ length: 10 }).map((_, i) =>
       prisma.division.create({
         data: {
           id: `${i}`,
@@ -31,45 +31,45 @@ async function main() {
     )
   );
 
-  // Create 5 division members (AFTER divisions created)
-  const divisionMembers = await Promise.all(
-    Array.from({ length: 15 }).map((_, i) =>
+  // Create 2 division members each division (AFTER divisions created)
+  await Promise.all(
+    Array.from({ length: 20 }).map((_, i) =>
       prisma.divisionMember.create({
         data: {
           id: `${i}`,
           userId: users[i].id,
-          divisionId: divisions[i].id,
+          divisionId: divisions[i % 10].id, // atau sesuai logika pembagian yang benar
           role: UserRole.MEMBER,
         },
       })
     )
   );
 
-  // Create 5 projects
+  // Create 20 projects
   const projects = await Promise.all(
-    Array.from({ length: 15 }).map((_, i) =>
+    Array.from({ length: 20 }).map((_, i) =>
       prisma.project.create({
         data: {
           id: `${i}`,
           name: `Project ${i}`,
           ownerId: users[i].id,
-          divisionId: divisions[i].id,
+          divisionId: divisions[i % 2 === 0 ? "1" : "2"].id,
         },
       })
     )
   );
 
-  // Create 5 tasks
+  // Create 100 tasks
   await Promise.all(
-    Array.from({ length: 15 }).map((_, i) =>
+    Array.from({ length: 100 }).map((_, i) =>
       prisma.task.create({
         data: {
           id: `${i}`,
           title: `Task ${i}`,
           description: `This is task ${i}`,
           dueDate: new Date(Date.now() + i * 86400000),
-          assignedToId: users[i].id,
-          projectId: projects[i].id,
+          assignedToId: users[Math.floor(i / 5)].id,
+          projectId: projects[Math.floor(i / 5)].id,
           status:
             i % 3 === 0
               ? TaskStatus.TODO

@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import projectRoutes from "./routes/project.routes";
 import taskRoutes from "./routes/task.routes";
+import divisionRoutes from "./routes/division.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import cookieParser from "cookie-parser";
 
@@ -28,6 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profile", userRoutes)
 app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
+app.use("/api/division", divisionRoutes);
 
 
 

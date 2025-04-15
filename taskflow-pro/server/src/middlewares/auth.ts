@@ -23,7 +23,7 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.cookies?.token; 
 
   if (!token) {
     return next(new ApiError(401, "Unauthorized - Token not found"));

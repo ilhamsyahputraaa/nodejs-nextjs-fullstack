@@ -14,4 +14,14 @@ router.post("/login", (req: Request, res: Response) => {
 
 router.get("/profile", verifyToken, getProfile);
 
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.status(200).json({ message: "Logged out" });
+});
+
+
 export default router;

@@ -1,8 +1,9 @@
 "use client";
 
 import { Provider } from "react-redux";
-import { store } from "@/store";
+import { store,persistor } from "@/store";
 import AuthProvider from "@/lib/AuthProvider";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default function ClientWrapper({
   children,
@@ -11,7 +12,7 @@ export default function ClientWrapper({
 }) {
   return (
     <Provider store={store}>
-      <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
     </Provider>
   );
 }

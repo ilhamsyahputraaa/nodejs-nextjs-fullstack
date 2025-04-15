@@ -29,6 +29,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { useLogout } from "@/hooks/use-logout"
 
 export function NavUser({
   user,
@@ -41,6 +42,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
 
+  const { handleLogout } = useLogout();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -51,7 +53,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={"sss"} alt={user.name} />
+                {/* <AvatarImage src={"sss"} alt={user.name} /> */}
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -72,7 +74,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={'/'} alt={user.name} />
+                  <AvatarImage src={"/"} alt={user.name} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -83,17 +85,17 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-           
+
             <DropdownMenuSeparator />
-            <Link href={'/login'}>
-            <DropdownMenuItem>
-              <IconLogout />
-              Log out
-            </DropdownMenuItem>
-            </Link>
+            <button onClick={handleLogout}>
+              <DropdownMenuItem>
+                <IconLogout />
+                Log out
+              </DropdownMenuItem>
+            </button>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

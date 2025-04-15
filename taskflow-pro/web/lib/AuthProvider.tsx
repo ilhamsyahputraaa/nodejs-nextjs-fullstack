@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import Cookies from "js-cookie";
-import { useAppDispatch } from "@/store";
-import { login, logout } from "@/store/authSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "@/store";
+import { login, logout } from "@/store/authSlice";
 
 const publicRoutes = ["/login", "/register"];
 
@@ -18,42 +16,44 @@ export default function AuthProvider({
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
+
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
-      const token = Cookies.get("token");
-
-      if (!token) {
-        dispatch(logout());
-        return;
-      }
-
       try {
         const res = await fetch("http://localhost:8080/api/auth/profile", {
-          credentials: "include", // supaya cookie HttpOnly bisa kebaca
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include", // Kirim cookie HttpOnly
         });
 
-        if (!res.ok) throw new Error("Invalid token");
+        if (!res.ok) throw new Error("Unauthorized");
 
         const data = await res.json();
-        dispatch(login({ user: data.user, token }));
+        dispatch(login({ user: data.user, token: "dummy" })); // token tidak dipakai di client
       } catch (err) {
         dispatch(logout());
-        Cookies.remove("token");
+      } finally {
+        setLoading(false);
       }
     };
 
     init();
   }, []);
 
-  // Redirect ke login kalau belum login dan buka private route
   useEffect(() => {
-    if (!isAuthenticated && !publicRoutes.includes(pathname)) {
+    if (!loading && !isAuthenticated && !publicRoutes.includes(pathname)) {
       router.push("/login");
     }
-  }, [isAuthenticated, pathname]);
+  }, [isAuthenticated, loading, pathname]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }

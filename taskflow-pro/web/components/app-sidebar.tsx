@@ -33,6 +33,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/store/auth"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store"
 
 const data = {
 
@@ -61,7 +63,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-const user = useAuthStore((state) => state.user);
+
+  const user = useSelector((state: RootState) => state.auth.user);
 
 console.log("user dari zustand",user);
 

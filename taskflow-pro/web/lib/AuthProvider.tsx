@@ -1,68 +1,59 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useAuthStore } from "@/store/auth";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/store";
+import { login, logout } from "@/store/authSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { usePathname, useRouter } from "next/navigation";
 
-const publicRoutes = ["/login", "/register"]; // halaman yg bisa diakses tanpa login
+const publicRoutes = ["/login", "/register"];
 
 export default function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  
-  
-  const { user, isLoading, hasCheckedAuth } = useAuthStore();
-  const setCheckedAuth = useAuthStore((state) => state.setCheckedAuth);
-
+  const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
-  const login = useAuthStore((state) => state.login);
-  const logout = useAuthStore((state) => state.logout);
-  const setLoading = useAuthStore((state) => state.setLoading);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const init = async () => {
-      setLoading(true);
+      const token = Cookies.get("token");
+
+      if (!token) {
+        dispatch(logout());
+        return;
+      }
+
       try {
         const res = await fetch("http://localhost:8080/api/auth/profile", {
-          credentials: "include",
+          credentials: "include", // supaya cookie HttpOnly bisa kebaca
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!res.ok) throw new Error("Not logged in");
+        if (!res.ok) throw new Error("Invalid token");
 
-        const { user, token } = await res.json();
-        login(user, token);
-        console.log("ini",user,token);
-        
-      } catch {
-        logout();
-      } finally {
-        setCheckedAuth(true);
+        const data = await res.json();
+        dispatch(login({ user: data.user, token }));
+      } catch (err) {
+        dispatch(logout());
+        Cookies.remove("token");
       }
     };
-init()
+
+    init();
   }, []);
 
-useEffect(() => {
-  if (!hasCheckedAuth) return;
-
-  const isPublic = publicRoutes.includes(pathname);
-
-  if (!user && !isPublic) {
-    console.log("anda tidak terdaftar di tokennya");
-    
-    router.replace("/login");
-  }
-
-  if (user && isPublic) {
-    router.replace("/dashboard");
-  }
-}, [user, pathname, hasCheckedAuth]);
-
-
-  if (isLoading) return <div className="p-8 text-center">Loading...</div>;
+  // Redirect ke login kalau belum login dan buka private route
+  useEffect(() => {
+    if (!isAuthenticated && !publicRoutes.includes(pathname)) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, pathname]);
 
   return <>{children}</>;
 }

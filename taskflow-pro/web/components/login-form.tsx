@@ -13,8 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth";
+import { logout } from "@/store/authSlice";
 import Cookies from "js-cookie"; 
+import { useAppDispatch } from "@/store";
+import { login as loginRedux } from "@/store/authSlice";
 
 export default function LoginForm({
   loginUser,
@@ -24,13 +26,20 @@ export default function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+
+
+const dispatch = useAppDispatch();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { user, token } = await loginUser({ email, password });
-      useAuthStore.getState().login(user, token); // simpan ke store
+      // Simpan token ke cookie
+      Cookies.set("token", token, { expires: 7 }); // 7 hari
 
-      // ✅ Redirect manual ke dashboard
+      // Simpan ke redux
+      dispatch(loginRedux({ user, token }));
+
       router.push("/dashboard");
     } catch (err: any) {
       console.error("Login failed:", err.message);
@@ -39,6 +48,8 @@ export default function LoginForm({
 
   useEffect(() => {
     Cookies.remove("token"); // hapus cookie saat login form tampil
+
+  dispatch(logout());
     console.log("🧹 Cookie token dihapus saat LoginForm ditampilkan");
   }, []);
 

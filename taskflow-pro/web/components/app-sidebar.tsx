@@ -32,55 +32,39 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAuthStore } from "@/store/auth"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+
   navMain: [
     {
       title: "Division",
-      url: "#",
+      url: "/dashboard/division",
       icon: IconChartBar,
     },
     {
       title: "Projects",
-      url: "#",
+      url: "/dashboard/project",
       icon: IconFolder,
     },
     {
-      title: "User",
-      url: "/dashboard/project",
+      title: "Users",
+      url: "/dashboard/user",
       icon: IconUsers,
     },
     {
       title: "Tasks",
-      url: "/dashboard/tasks",
+      url: "/dashboard/task",
       icon: IconListDetails,
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+const user = useAuthStore((state) => state.user);
+
+console.log("user dari zustand",user);
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -100,10 +84,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {
+          user &&
+        <NavUser user={user} />
+        }
       </SidebarFooter>
     </Sidebar>
   )

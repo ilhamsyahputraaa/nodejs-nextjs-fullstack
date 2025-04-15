@@ -1,6 +1,8 @@
 'use server'
 
 import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
@@ -35,18 +37,38 @@ export async function loginUser({
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include", // kirim cookie ke backend kalau pakai session
     body: JSON.stringify({ email, password }),
   });
 
+  const data = await res.json(); // ✅ parse response dulu
+
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || "Login failed");
+    throw new Error(data.message || "Login failed");
   }
 
-  const data = await res.json();
+  const token = data.token; // ✅ ambil token dari data
+
+  const cookielogin = await cookies(); // ga perlu pakai await di sini
+
+  // ✅ Set cookie
+  cookielogin.set({
+    name: "token",
+    value: token,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24, // 1 day
+  });
+
+  console.log("anda sudah login");
+  console.log(data);
 
   return data;
 }
+
+
 
 
 
@@ -60,6 +82,7 @@ export const getProfile = async () => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    credentials: "include",
   });
 
   if (!res.ok) throw new Error("Failed to fetch profile");

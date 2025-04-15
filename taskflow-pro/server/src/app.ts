@@ -26,13 +26,10 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
-app.use("/api/profile", userRoutes)
+app.use("/api/profile", userRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/division", divisionRoutes);
-
-
-
 
 // ⛔️ Pasang errorHandler di paling akhir
 app.use(errorHandler);

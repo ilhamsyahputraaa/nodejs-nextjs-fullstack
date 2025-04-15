@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth";
+import Cookies from "js-cookie"; 
 
 export default function LoginForm({
   loginUser,
@@ -22,20 +23,27 @@ export default function LoginForm({
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const router = useRouter()
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const {user, token} = await loginUser({ email, password });
+      const { user, token } = await loginUser({ email, password });
       useAuthStore.getState().login(user, token); // simpan ke store
+
+      // ✅ Redirect manual ke dashboard
       router.push("/dashboard");
     } catch (err: any) {
       console.error("Login failed:", err.message);
     }
   };
 
+  useEffect(() => {
+    Cookies.remove("token"); // hapus cookie saat login form tampil
+    console.log("🧹 Cookie token dihapus saat LoginForm ditampilkan");
+  }, []);
+
   return (
-    <div className={cn("flex flex-col gap-6")} >
+    <div className={cn("flex flex-col gap-6")}>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
@@ -49,11 +57,10 @@ const router = useRouter()
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
                 />
               </div>
               <div className="grid gap-3">
@@ -66,10 +73,12 @@ const router = useRouter()
                     Forgot your password?
                   </a>
                 </div>
-                <Input type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password" />
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
@@ -90,6 +99,5 @@ const router = useRouter()
         </CardContent>
       </Card>
     </div>
-   
   );
 }

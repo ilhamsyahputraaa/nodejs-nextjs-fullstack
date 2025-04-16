@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { register, login, getProfile } from "../controllers/auth.controller";
-import { verifyToken } from "../middlewares/auth";
+import {  verifyTokenProfile } from "../middlewares/auth";
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.post("/login", (req: Request, res: Response) => {
   void login(req, res);
 });
 
-router.get("/profile", verifyToken, getProfile);
+router.get("/profile", verifyTokenProfile, getProfile);
 
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {

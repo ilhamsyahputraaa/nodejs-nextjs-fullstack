@@ -39,3 +39,26 @@ export const verifyToken = (
     return next(new ApiError(401, "Unauthorized - Invalid token"));
   }
 };
+
+
+
+export const verifyTokenProfile = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+ const token = req.cookies?.token; 
+
+
+  if (!token) {
+    return next(new ApiError(401, "Unauthorized - Token not provided"));
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return next(new ApiError(401, "Unauthorized - Invalid token"));
+  }
+};

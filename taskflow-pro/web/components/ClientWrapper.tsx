@@ -12,7 +12,10 @@ export default function ClientWrapper({
 }) {
   return (
     <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+
         <AuthProvider>{children}</AuthProvider>
+      </PersistGate>
     </Provider>
   );
 }

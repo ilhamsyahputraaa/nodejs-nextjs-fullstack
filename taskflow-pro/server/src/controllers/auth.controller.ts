@@ -44,6 +44,7 @@ export const getProfile = async (req: Request, res: Response) => {
     if (!id) throw new Error("Unauthorized");
 
     const { user } = await getProfileUser(id);
+    
     res.status(200).json({ user });
   } catch (err: any) {
     res.status(401).json({ error: err.message });

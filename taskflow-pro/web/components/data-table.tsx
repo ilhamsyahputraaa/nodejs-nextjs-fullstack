@@ -305,13 +305,8 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
 ];
-type DraggableRowProps<T extends { id: string | number }> = {
-  row: Row<T>;
-};
 
-function DraggableRow<T extends { id: string | number }>({
-  row,
-}: DraggableRowProps<T>) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
@@ -336,16 +331,12 @@ function DraggableRow<T extends { id: string | number }>({
   );
 }
 
-type DataTableProps<T extends { id: string | number }> = {
-  data: T[];
-  columns: ColumnDef<T>[];
-};
-
-export function DataTable<T extends { id: string | number }>({
-  data,
-  columns,
-}: DataTableProps<T>) {
-  // const [data, setData] = React.useState(() => initialData);
+export function DataTable({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[];
+}) {
+  const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -364,10 +355,10 @@ export function DataTable<T extends { id: string | number }>({
     useSensor(KeyboardSensor, {})
   );
 
-  // const dataIds = React.useMemo<UniqueIdentifier[]>(
-  //   () => data?.map(({ id }) => id) || [],
-  //   [data]
-  // );
+  const dataIds = React.useMemo<UniqueIdentifier[]>(
+    () => data?.map(({ id }) => id) || [],
+    [data]
+  );
 
   const table = useReactTable({
     data,
@@ -379,7 +370,7 @@ export function DataTable<T extends { id: string | number }>({
       columnFilters,
       pagination,
     },
-    // getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -397,14 +388,13 @@ export function DataTable<T extends { id: string | number }>({
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active && over && active.id !== over.id) {
-      // setData((data) => {
-      //   const oldIndex = dataIds.indexOf(active.id);
-      //   const newIndex = dataIds.indexOf(over.id);
-      //   return arrayMove(data, oldIndex, newIndex);
-      // });
+      setData((data) => {
+        const oldIndex = dataIds.indexOf(active.id);
+        const newIndex = dataIds.indexOf(over.id);
+        return arrayMove(data, oldIndex, newIndex);
+      });
     }
   }
-  const dataIds = table.getRowModel().rows.map((row) => row.id);
 
   return (
     <Tabs

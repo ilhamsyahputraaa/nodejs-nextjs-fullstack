@@ -3,12 +3,14 @@ import { getUserList } from "../api/user";
 import { DataTable } from "@/components/data-table";
 import SectionCards from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
-import { userColumns } from "@/components/tables/user-columns";
+import { userColumns } from "@/components/tables/columns/user-columns";
+import { UserDataTable } from "@/components/tables/user-table";
+// import { DataTableTemplate } from "@/components/tables/TableTemplate";
 
 export default async function Page() {
   const { users } = await getUserList();
 
-  console.log(users);
+  // console.log(users);
   
   return (
     <>
@@ -19,7 +21,8 @@ export default async function Page() {
         <div className="px-4 lg:px-6">
           <ChartAreaInteractive />
         </div>
-        <DataTable data={users} columns={userColumns} />
+        <UserDataTable data={users} columns={userColumns} title={"User Table"} />
+        {/* <DataTableTemplate columns={users} data={userColumns} /> */}
       </div>
     </>
   );

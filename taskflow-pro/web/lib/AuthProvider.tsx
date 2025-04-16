@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/store";
 import { login, logout } from "@/store/authSlice";
+import { getProfile } from "@/app/api/auth";
 
 const publicRoutes = ["/login", "/register"];
 
@@ -23,15 +24,17 @@ export default function AuthProvider({
   useEffect(() => {
     const init = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/auth/profile", {
-          credentials: "include", // Kirim cookie HttpOnly
-        });
+     const res = await fetch("http://localhost:8080/api/auth/profile", {
+       credentials: "include", // Kirim cookie HttpOnly
+     });
 
         if (!res.ok) throw new Error("Unauthorized");
 
         const data = await res.json();
-        dispatch(login({ user: data.user, token: "dummy" })); // token tidak dipakai di client
+        console.log("✅ AuthProvider: logged in user", data);
+        dispatch(login({ user: data.user, token: "dummy" }));
       } catch (err) {
+        console.warn("❌ AuthProvider error", err);
         dispatch(logout());
       } finally {
         setLoading(false);

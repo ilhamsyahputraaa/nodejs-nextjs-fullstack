@@ -18,7 +18,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
     }
   }
-  console.log("token dari middleware",token);
+  // console.log("token dari middleware",token);
   
   if (!token) {
     console.log("anda tidak punya token");

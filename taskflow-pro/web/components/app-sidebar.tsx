@@ -66,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const user = useSelector((state: RootState) => state.auth.user);
 
-console.log("user dari zustand",user);
+// console.log("user dari zustand",user);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>

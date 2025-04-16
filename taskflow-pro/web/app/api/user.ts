@@ -36,7 +36,7 @@ export const getUserList = async () => {
   });
   
   if (!res.ok) throw new Error("Failed to fetch profile");
-  console.log('pengambilan list user', res);
+  // console.log('pengambilan list user', res);
 
   return res.json();
 };

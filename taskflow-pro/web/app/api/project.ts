@@ -3,13 +3,16 @@ import { cookies } from "next/headers";
 const API_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
-export const getProjects = async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
+  
+
+export const getUserTasks = async (userId:string) => {
+
   if (!token) throw new Error("Token not found");
 
-  const res = await fetch(`${API_URL}/project/`, {
+  const res = await fetch(`${API_URL}/task/user/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -20,32 +23,11 @@ export const getProjects = async () => {
   return res.json();
 };
 
-
-export const getUserProjects = async (userId:string) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+export const getTasksById = async (id: String) => {
 
   if (!token) throw new Error("Token not found");
 
-  const res = await fetch(`${API_URL}/project/user`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ userId }),
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch profile");
-
-  return res.json();
-};
-
-export const getProjectsById = async (id: String) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  if (!token) throw new Error("Token not found");
-
-  const res = await fetch(`${API_URL}/project/${id}`, {
+  const res = await fetch(`${API_URL}/task/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -56,48 +38,16 @@ export const getProjectsById = async (id: String) => {
   return res.json();
 };
 
-export async function createProject({ name,division_id }: { name: string, division_id:string }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+export async function createTask({ name,assignedToId, description, dueDate,projectId, status, division_id }: { name: string, division_id:string, assignedToId:string, description:string, dueDate:Date, projectId:string, status:string }) {
 
   if (!token) throw new Error("Token not found");
-  const res = await fetch(`${API_URL}/api/project/create`, {
+  const res = await fetch(`${API_URL}/api/task/create`, {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, division_id }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message);
-  }
-
-  const data = await res.json();
-
-  return data;
-}
-
-export async function addMemberProject({
-  projectId,
-  userId,
-  role,
-}: {
-  projectId: string;
-  userId: string;
-  role: string;
-}) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  if (!token) throw new Error("Token not found");
-  const res = await fetch(`${API_URL}/api/project/add-member`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ projectId, userId, role }),
+    body: JSON.stringify({ name,assignedToId, description, dueDate, projectId,status,  division_id }),
   });
 
   if (!res.ok) {
@@ -111,22 +61,38 @@ export async function addMemberProject({
 }
 
 export async function updateMemberRole({
-  memberId,
-  newRole,
+  name,
+  assignedToId,
+  description,
+  dueDate,
+  projectId,
+  status,
+  division_id,
 }: {
-  memberId: string;
-  newRole: string;
+  name: string;
+  division_id: string;
+  assignedToId: string;
+  description: string;
+  dueDate: Date;
+  projectId: string;
+  status: string;
 }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
   if (!token) throw new Error("Token not found");
-  const res = await fetch(`${API_URL}/api/project/update-role`, {
+  const res = await fetch(`${API_URL}/api/task/update`, {
     method: "PUT",
     headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ memberId, newRole }),
+    body: JSON.stringify({
+      name,
+      assignedToId,
+      description,
+      dueDate,
+      projectId,
+      status,
+      division_id,
+    }),
   });
 
   if (!res.ok) {
@@ -139,17 +105,14 @@ export async function updateMemberRole({
   return data;
 }
 
-export async function deleteMember({ memberId }: { memberId: string }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+export async function deleteTask({ memberId }: { memberId: string }) {
 
   if (!token) throw new Error("Token not found");
-  const res = await fetch(`${API_URL}/api/project/remove-member/${memberId}`, {
+  const res = await fetch(`${API_URL}/api/task/delete/${memberId}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ memberId }),
   });
 
   if (!res.ok) {

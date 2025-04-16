@@ -94,7 +94,7 @@ export const handleUpdateTask = async (req: Request, res: Response) => {
 export const handleDeleteTask = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id; // ✅ dari token
-    const { taskId } = req.body;
+    const taskId  = req.params.id;
 
     const updated = await deleteTask(taskId, userId);
     if (!updated) throw new Error("Task not found");

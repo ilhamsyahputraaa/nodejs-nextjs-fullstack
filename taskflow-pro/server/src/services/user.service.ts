@@ -26,6 +26,9 @@ export const updateProfileUser = async (
       name: payload.name,
       image: payload.image,
     },
+    include:{
+      Project:{include:{tasks:true}}
+    }
   });
 
   return { user: updatedUser };

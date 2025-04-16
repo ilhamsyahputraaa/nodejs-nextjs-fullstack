@@ -2,6 +2,13 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
+export const getAllProjects = async () => {
+  const projects = await prisma.project.findMany();
+  if (!projects) throw new Error("Invalid credentials");
+  return  projects ;
+};
+
 export const getProjectUser = async (userId: string) => {
   const projects = await prisma.project.findMany({
     where: { ownerId: userId },

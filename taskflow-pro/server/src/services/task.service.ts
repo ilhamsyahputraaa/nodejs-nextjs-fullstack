@@ -2,6 +2,14 @@ import { PrismaClient, TaskStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
+
+export const getAllTask = async () => {
+  const tasks = await prisma.task.findMany();
+  if (!tasks) throw new Error("Invalid credentials");
+  return tasks ;
+};
+
 export const getTaskUser = async (userId: string) => {
   const tasks = await prisma.task.findMany({
     where: { assignedToId: userId },

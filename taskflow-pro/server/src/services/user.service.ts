@@ -3,6 +3,11 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
+export const getListUsers = async()=> {
+  const users = await prisma.user.findMany()
+return users
+}
+
 export const getProfileUser = async (id: string) => {
   const user = await prisma.user.findUnique({ where: { id } });
   if (!user) throw new Error("Invalid credentials");

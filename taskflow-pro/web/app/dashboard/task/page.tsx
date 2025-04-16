@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/data-table";
-import { SectionCards } from "@/components/section-cards";
+import SectionCards from "@/components/section-cards";
 import React from "react";
 import data from "../data.json";
 import { SiteHeader } from "@/components/site-header";

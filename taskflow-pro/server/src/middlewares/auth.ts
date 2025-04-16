@@ -23,11 +23,13 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies?.token; 
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    return next(new ApiError(401, "Unauthorized - Token not found"));
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new ApiError(401, "Unauthorized - Token not provided"));
   }
+
+  const token = authHeader.split(" ")[1]; // ambil bagian setelah 'Bearer '
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;

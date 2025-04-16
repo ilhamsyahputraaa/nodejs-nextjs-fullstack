@@ -8,11 +8,13 @@ import {
 import express from "express";
 import { verifyToken } from "../middlewares/auth";
 import { checkDivisionAdmin } from "../middlewares/isDivisionAdmin";
+import { handleGetListUser } from "../controllers/user.controller";
 
 const router = express.Router();
 
+router.get('/users', verifyToken, handleGetListUser)
 
-router.get('/user/:id', verifyToken, getTaskByUSer)
+router.get("/user/:id", verifyToken, getTaskByUSer);
 
 
 router.get("/:id", verifyToken, handleGetTaskDetail);

@@ -41,8 +41,8 @@ const dispatch = useAppDispatch();
       dispatch(loginRedux({ user, token }));
 
       router.push("/dashboard");
-    } catch (err: any) {
-      console.error("Login failed:", err.message);
+    } catch (err) {
+      console.error("Login failed:", err);
     }
   };
 
@@ -51,7 +51,7 @@ const dispatch = useAppDispatch();
 
   dispatch(logout());
     console.log("🧹 Cookie token dihapus saat LoginForm ditampilkan");
-  }, []);
+  }, [router]);
 
   return (
     <div className={cn("flex flex-col gap-6")}>

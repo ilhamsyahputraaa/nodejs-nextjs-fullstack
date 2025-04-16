@@ -24,7 +24,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
 import { useLogout } from "@/hooks/use-logout"
 
 export function NavUser({

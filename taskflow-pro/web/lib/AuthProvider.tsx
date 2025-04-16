@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/store";
 import { login, logout } from "@/store/authSlice";
-import { getProfile } from "@/app/api/auth";
 
 const publicRoutes = ["/login", "/register"];
 
@@ -42,7 +41,7 @@ export default function AuthProvider({
     };
 
     init();
-  }, []);
+  });
 
   useEffect(() => {
     if (!loading && !isAuthenticated && !publicRoutes.includes(pathname)) {

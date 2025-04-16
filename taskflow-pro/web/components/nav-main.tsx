@@ -1,6 +1,6 @@
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react"
 
 import {
   SidebarGroup,
@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname} from "next/navigation"
 
 export function NavMain({
   items,

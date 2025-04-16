@@ -15,7 +15,6 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import {
   IconChevronDown,
   IconChevronLeft,
@@ -23,12 +22,10 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconLayoutColumns,
-  IconPlus,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
-  Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -40,9 +37,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { z } from "zod";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -198,8 +193,9 @@ export function UserDataTable<T extends { id: string | number }>({
                     items={dataIds}
                     strategy={verticalListSortingStrategy}
                   >
-                    {table.getRowModel().rows.map((row) => (
+                    {table.getRowModel().rows.map((row,i) => (
                       <TableRow
+                      key={i}
                         data-state={row.getIsSelected() && "selected"}
                         className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
                       >

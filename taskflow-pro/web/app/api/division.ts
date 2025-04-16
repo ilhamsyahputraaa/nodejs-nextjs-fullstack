@@ -24,7 +24,7 @@ export const getDivisions = async () => {
 };
 
 
-export const getDivisionsById = async (id:String) => {
+export const getDivisionsById = async (id:string) => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 

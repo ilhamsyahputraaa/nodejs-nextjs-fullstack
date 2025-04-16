@@ -23,7 +23,7 @@ export const getUserTasks = async (userId:string) => {
   return res.json();
 };
 
-export const getTasksById = async (id: String) => {
+export const getTasksById = async (id: string) => {
 
   if (!token) throw new Error("Token not found");
 

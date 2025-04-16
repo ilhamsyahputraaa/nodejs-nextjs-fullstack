@@ -1,6 +1,5 @@
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { getUserList } from "../api/user";
-import { DataTable } from "@/components/data-table";
 import SectionCards from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
 import { userColumns } from "@/components/tables/columns/user-columns";
@@ -10,7 +9,7 @@ import { UserDataTable } from "@/components/tables/user-table";
 export default async function Page() {
   const { users } = await getUserList();
 
-  // console.log(users);
+  console.log(users);
   
   return (
     <>

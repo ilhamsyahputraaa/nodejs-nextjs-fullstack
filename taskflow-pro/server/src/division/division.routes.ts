@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import {
   handleGetAllDivisions,
   handleGetDivisionById,
@@ -6,12 +6,14 @@ import {
   handleAddMember,
   handleUpdateMemberRole,
   handleRemoveMember,
-} from "../controllers/division.controller";
+} from "./division.controller";
 import { verifyToken } from "../middlewares/auth";
 
 const router = express.Router();
 
-router.get("/", verifyToken, handleGetAllDivisions);
+router.get("/", verifyToken, (req: Request, res: Response) => {
+  void handleGetAllDivisions(req, res);
+});
 router.get("/:id", verifyToken, handleGetDivisionById);
 router.post("/create", verifyToken, handleCreateDivision);
 router.post("/add-member", verifyToken, handleAddMember);

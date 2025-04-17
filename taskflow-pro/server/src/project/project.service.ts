@@ -3,10 +3,22 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
-export const getAllProjects = async () => {
-  const projects = await prisma.project.findMany();
+export const getListProjects = async (page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
+  const [projects, total] = await Promise.all([
+    prisma.project.findMany({
+      skip,
+      take:limit,
+      include:{
+        division:true,
+        tasks:true,
+      }
+    }),
+    prisma.project.count()
+  ])
   if (!projects) throw new Error("Invalid credentials");
-  return  projects ;
+  return {projects,total};
 };
 
 export const getProjectUser = async (userId: string) => {

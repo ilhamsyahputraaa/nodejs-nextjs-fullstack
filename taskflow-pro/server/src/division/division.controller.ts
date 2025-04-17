@@ -1,18 +1,32 @@
 import { Request, Response } from "express";
-import * as divisionService from "../services/division.service";
+import * as divisionService from "./division.service";
 
 export const handleGetAllDivisions = async (req: Request, res: Response) => {
   try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const { divisions, total } = await divisionService.getAllDivisions(
+      page,
+      limit
+    );
+
     const userId = (req as any).user?.id;
     if (!userId) throw new Error("Not authorized");
 
-    const divisions = await divisionService.getAllDivisions();
-    res.status(200).json({ divisions });
+    return res.status(200).json({
+      data: divisions,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error: any) {
     res.status(404).json({ error: error.message });
   }
 };
-
 
 export const handleGetDivisionById = async (req: Request, res: Response) => {
   try {
@@ -29,7 +43,6 @@ export const handleGetDivisionById = async (req: Request, res: Response) => {
   }
 };
 
-
 export const handleCreateDivision = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
@@ -42,7 +55,6 @@ export const handleCreateDivision = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message });
   }
 };
-
 
 export const handleAddMember = async (req: Request, res: Response) => {
   try {
@@ -62,7 +74,6 @@ export const handleAddMember = async (req: Request, res: Response) => {
   }
 };
 
-
 export const handleUpdateMemberRole = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
@@ -77,7 +88,6 @@ export const handleUpdateMemberRole = async (req: Request, res: Response) => {
   }
 };
 
-
 export const handleRemoveMember = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
@@ -91,4 +101,3 @@ export const handleRemoveMember = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message });
   }
 };
-

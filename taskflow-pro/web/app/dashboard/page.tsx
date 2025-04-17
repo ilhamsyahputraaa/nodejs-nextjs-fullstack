@@ -6,11 +6,21 @@ import { userColumns } from "@/components/tables/columns/user-columns";
 import { UserDataTable } from "@/components/tables/user-table";
 // import { DataTableTemplate } from "@/components/tables/TableTemplate";
 
-export default async function Page() {
-  const { users } = await getUserList();
+type Props = {
+  searchParams: {
+    page?: string;
+    limit?: string;
+  };
+};
+
+export default async function Page({ searchParams }: Props) {
+  const page = parseInt(searchParams.page || "1", 10);
+  const limit = parseInt(searchParams.limit || "10", 10);
+
+  const { data: users } = await getUserList(page, limit);
 
   console.log(users);
-  
+
   return (
     <>
       <SiteHeader pageTitle="Dashboard" />
@@ -20,7 +30,11 @@ export default async function Page() {
         <div className="px-4 lg:px-6">
           <ChartAreaInteractive />
         </div>
-        <UserDataTable data={users} columns={userColumns} title={"User Table"} />
+        <UserDataTable
+          data={users}
+          columns={userColumns}
+          title={"User Table"}
+        />
         {/* <DataTableTemplate columns={users} data={userColumns} /> */}
       </div>
     </>

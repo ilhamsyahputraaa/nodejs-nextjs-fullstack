@@ -4,10 +4,10 @@ import {
   getProfileUser,
   updatePasswordUser,
   updateProfileUser,
-} from "../services/user.service";
-import { getAllDivisions } from "../services/division.service";
-import { getAllProjects } from "../services/project.service";
-import { getAllTask } from "../services/task.service";
+} from "./user.service";
+import { getAllDivisions } from "../division/division.service";
+import { getAllTask } from "../task/task.service";
+import { getListProjects } from "../project/project.service";
 
 export const handleGetSummaryData = async (
   req: Request,
@@ -22,33 +22,44 @@ export const handleGetSummaryData = async (
 
     const Users = await getListUsers();
     const Divisions = await getAllDivisions();
-    const Projects = await getAllProjects();
+    const Projects = await getListProjects();
     const Tasks = await getAllTask();
 
     res.status(200).json({
-      users: Users.length,
-      divisions: Divisions.length,
-      projects: Projects.length,
-      tasks: Tasks.length,
+      users: Users.total,
+      divisions: Divisions.total,
+      projects: Projects.total,
+      tasks: Tasks.total,
     });
     console.log("Summary has been hit");
-    
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
 
-
-
-export const handleGetListUser = async (req: Request, res: Response) => {
+export const getUserList = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user?.id; // ✅ dari token
-    if (!userId) throw new Error("not Authorized");
-    const users = await getListUsers();
-    res.status(200).json({ users });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const { users, total } = await getListUsers(page, limit);
+
+    const userId = (req as any).user?.id;
+    if (!userId) throw new Error("Not authorized");
+
+    return res.status(200).json({
+      data: users,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (err: any) {
-    res.status(404).json({ error: err.message });
+    console.error("❌ Failed to get user list:", err.message);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 

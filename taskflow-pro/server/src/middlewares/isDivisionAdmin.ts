@@ -1,6 +1,6 @@
 // middlewares/isDivisionAdmin.ts
 import { Request, Response, NextFunction } from "express";
-import { isDivisionAdmin } from "../services/division.service";
+import { isDivisionAdmin } from "../division/division.service";
 import { ApiError } from "../utils/apiError";
 
 export const checkDivisionAdmin = async (

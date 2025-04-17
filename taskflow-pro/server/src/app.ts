@@ -2,11 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.routes";
-import userRoutes from "./routes/user.routes";
-import projectRoutes from "./routes/project.routes";
-import taskRoutes from "./routes/task.routes";
-import divisionRoutes from "./routes/division.routes";
+import authRoutes from "./auth/auth.routes";
+import userRoutes from "./user/user.routes";
+import projectRoutes from "./project/project.routes";
+import taskRoutes from "./task/task.routes";
+import divisionRoutes from "./division/division.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import cookieParser from "cookie-parser";
 

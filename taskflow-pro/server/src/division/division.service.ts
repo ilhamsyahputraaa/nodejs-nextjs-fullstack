@@ -2,8 +2,14 @@ import { PrismaClient, User, UserRole } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getAllDivisions = async () => {
-  return prisma.division.findMany({
+export const getAllDivisions = async (page = 1, limit = 10) => {
+  
+   const skip = (page - 1) * limit;
+
+   const [divisions, total] = await Promise.all([
+    prisma.division.findMany({
+      skip,
+      take:limit,
     include: {
       members: {
         include: {
@@ -12,7 +18,9 @@ export const getAllDivisions = async () => {
       },
       projects: true,
     },
-  });
+  }), prisma.division.count()
+   ])
+  return {divisions, total}
 };
 
 export const getDivisionById = async (id: string) => {

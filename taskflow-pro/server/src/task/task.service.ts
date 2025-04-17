@@ -4,10 +4,23 @@ const prisma = new PrismaClient();
 
 
 
-export const getAllTask = async () => {
-  const tasks = await prisma.task.findMany();
-  if (!tasks) throw new Error("Invalid credentials");
-  return tasks ;
+export const getAllTask = async (page=1, limit=10) => {
+
+
+   const skip = (page - 1) * limit;
+
+   const [tasks, total] = await Promise.all([
+     prisma.task.findMany({
+       skip,
+       take: limit,
+       include: {
+         assignedTo:{include:{Project:true, accounts:true}},
+         
+       },
+     }),
+     prisma.division.count(),
+   ]);
+  return {tasks, total} ;
 };
 
 export const getTaskUser = async (userId: string) => {
@@ -36,7 +49,7 @@ export const createTask = async (
   name: string,
   description:string,
   dueDate: Date,
-  projectId: string,status:TaskStatus="TODO"
+  projectId: string,status:TaskStatus="TODO", credit:number
 ) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
@@ -56,6 +69,7 @@ export const createTask = async (
       projectId: projectId,
       assignedToId: assignedToId,
       status: status||"TODO",
+      credit:credit
     },
     include: {
       project: true,

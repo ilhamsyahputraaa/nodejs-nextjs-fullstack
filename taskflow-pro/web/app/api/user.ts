@@ -22,18 +22,20 @@ export const getUserSummary = async () => {
 };
 
 
-export const getUserList = async () => {
+export const getUserList = async (page:number=1, limit:number=10) => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   
   if (!token) throw new Error("Token not found");
   
-  const res = await fetch(`${API_URL}/profile/list`, {
+  const res = await fetch(`${API_URL}/profile/list?page=${page}&limit=${limit}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log('list users',res);
+  
   
   if (!res.ok) throw new Error("Failed to fetch profile");
   // console.log('pengambilan list user', res);

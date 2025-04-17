@@ -5,26 +5,21 @@ import {
   handleDeleteProject,
   handleGetProjectDetail,
   handleUpdateProject,
-} from "../controllers/project.controller";
+} from "./project.controller";
 import express from "express";
 import { verifyToken } from "../middlewares/auth";
 
 const router = express.Router();
 
-
-router.get('/',verifyToken, getProjectByUSerLogin)
-
+router.get("/", verifyToken, getProjectByUSerLogin);
 
 router.get("/user", verifyToken, getProjectByUSer);
 
 router.post("/create", verifyToken, handleCreateProject);
 
-
 router.get("/:id", verifyToken, handleGetProjectDetail);
 
-
-router.put("/update", verifyToken, handleUpdateProject
-);
+router.put("/update", verifyToken, handleUpdateProject);
 
 router.delete("/delete", verifyToken, handleDeleteProject);
 

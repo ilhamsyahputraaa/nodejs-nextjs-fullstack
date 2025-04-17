@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import {
-  registerUser,
-  loginUser,
-  getProfileUser,
-} from "../services/auth.service";
+import { registerUser, loginUser, getProfileUser } from "./auth.service";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -39,12 +35,11 @@ export const login = async (req: Request, res: Response) => {
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    
     const id = req.user?.id; // Ambil ID dari JWT (middleware)
     if (!id) throw new Error("Unauthorized");
 
     const { user } = await getProfileUser(id);
-    
+
     res.status(200).json({ user });
   } catch (err: any) {
     res.status(401).json({ error: err.message });

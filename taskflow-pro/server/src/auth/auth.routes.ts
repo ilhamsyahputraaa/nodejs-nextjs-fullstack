@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { register, login, getProfile } from "../controllers/auth.controller";
-import {  verifyTokenProfile } from "../middlewares/auth";
+import { register, login, getProfile } from "./auth.controller";
+import { verifyTokenProfile } from "../middlewares/auth";
 
 const router = express.Router();
 
@@ -22,6 +22,5 @@ router.post("/logout", (req, res) => {
   });
   res.status(200).json({ message: "Logged out" });
 });
-
 
 export default router;

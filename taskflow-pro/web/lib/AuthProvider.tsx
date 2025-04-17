@@ -30,7 +30,7 @@ export default function AuthProvider({
         if (!res.ok) throw new Error("Unauthorized");
 
         const data = await res.json();
-        console.log("✅ AuthProvider: logged in user", data);
+        console.log("✅ AuthProvider: logged in user", data); //mengapa ini dipanggil terus menerus tidak berhenti?
         dispatch(login({ user: data.user, token: "dummy" }));
       } catch (err) {
         console.warn("❌ AuthProvider error", err);
@@ -41,7 +41,7 @@ export default function AuthProvider({
     };
 
     init();
-  });
+  },[pathname]);
 
   useEffect(() => {
     if (!loading && !isAuthenticated && !publicRoutes.includes(pathname)) {

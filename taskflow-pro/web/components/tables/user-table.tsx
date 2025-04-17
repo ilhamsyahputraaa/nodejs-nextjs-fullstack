@@ -61,6 +61,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter,usePathname } from "next/navigation";
 
 
 type DataTableProps<T extends { id: string | number }> = {
@@ -85,6 +86,7 @@ export function UserDataTable<T extends { id: string | number }>({
     pageIndex: 0,
     pageSize: 10,
   });
+
   const sortableId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
@@ -117,6 +119,18 @@ export function UserDataTable<T extends { id: string | number }>({
   });
 
   const dataIds = table.getRowModel().rows.map((row) => row.id);
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  React.useEffect(() => {
+    const query = new URLSearchParams();
+    query.set("page", (pagination.pageIndex + 1).toString());
+    query.set("limit", pagination.pageSize.toString());
+
+    // Ubah URL tapi tidak reload
+    router.replace(`${pathname}?${query.toString()}`);
+  }, [pagination.pageIndex, pagination.pageSize]);
 
   return (
     <div defaultValue="outline" className="w-full flex-col justify-start gap-6">

@@ -3,10 +3,25 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-export const getListUsers = async()=> {
-  const users = await prisma.user.findMany()
-return users
-}
+// services/user.service.ts
+export const getListUsers = async (page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      skip,
+      take: limit,
+      include: {
+        Project: true,
+        tasks: true,
+        divisions: true,
+      },
+    }),
+    prisma.user.count(),
+  ]);
+
+  return { users, total };
+};
 
 export const getProfileUser = async (id: string) => {
   const user = await prisma.user.findUnique({ where: { id } });

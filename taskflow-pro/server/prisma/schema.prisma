@@ -54,6 +54,7 @@ model Project {
 model Task {
   id           String     @id @default(cuid())
   title        String
+  credit        Int
   description  String?
   dueDate      DateTime?
   assignedTo   User?      @relation("AssignedTasks", fields: [assignedToId], references: [id])
